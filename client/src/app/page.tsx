@@ -163,11 +163,11 @@ function SuccessComponent({ message }: { message: string }) {
         <SuccessIcon className="w-16 h-16 mx-auto text-green-500" />
       </div>
       <h2 className="mt-4 text-2xl font-bold text-gray-900">
-        You're on the list!
+        You&apos;re on the list!
       </h2>
       <p className="mt-2 text-lg text-gray-600">{message}</p>
       <p className="mt-4 text-sm text-gray-500">
-        We'll keep you updated on our progress.
+        We&apos;ll keep you updated on our progress.
       </p>
     </div>
   );
