@@ -14,7 +14,7 @@ anthropic = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 # Initialize Pinecone
 pinecone.init(api_key=os.getenv("PINECONE_API_KEY"), environment=os.getenv("PINECONE_ENVIRONMENT"))
-index_name = "flashcards"
+index_name = "flashcardai"
 
 # Initialize OpenAI Embeddings
 embeddings = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"))
