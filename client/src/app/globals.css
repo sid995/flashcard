@@ -6,7 +6,7 @@
   :root {
     --background: 210 100% 97%;
     --foreground: 339 20% 20%;
-    --primary: 308 56% 85%;
+    --primary: 308 56% 75%;
     --primary-foreground: 210 22% 22%;
     --secondary: 196 75% 88%;
     --secondary-foreground: 210 22% 22%;
@@ -36,7 +36,12 @@
     @apply bg-background text-foreground font-body;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-heading;
   }
 }

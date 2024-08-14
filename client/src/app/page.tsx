@@ -8,7 +8,7 @@ import { JSX, SVGProps, useState } from "react";
 import { WaitlistFormData, waitlistSchema } from "@/lib/schemas/waitlist";
 import { z } from "zod";
 
-export default function Component() {
+export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<{
     success: boolean;
