@@ -1,6 +1,7 @@
 import { Manrope } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "./globals.css";
+import { Metadata } from "next";
 
 const fontHeading = Manrope({
   subsets: ["latin"],
@@ -14,7 +15,7 @@ const fontBody = Manrope({
   variable: "--font-body",
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Flashcard AI",
   description: "Learn Anything with AI-Powered Flashcards",
   icons: {
@@ -27,6 +28,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body
         className={cn("antialiased", fontHeading.variable, fontBody.variable)}
       >
