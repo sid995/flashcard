@@ -1,10 +1,66 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RegistrationData, registrationSchema } from "@/lib/schemas/auth";
 import Link from "next/link";
-import { JSX, SVGProps } from "react";
+import { useRouter } from "next/navigation";
+import { JSX, SVGProps, useState } from "react";
+import { z } from "zod";
 
 export default function Page() {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+
+  async function credentialSignUp(formData: FormData) {
+    setError(null); // Clear any previous errors
+
+    const rawData: RegistrationData = {
+      username: formData.get("username") as string,
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      confirmPassword: formData.get("confirm-password") as string,
+    };
+
+    if (rawData.password !== rawData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      // Validate the form data
+      const validatedData = registrationSchema.parse(rawData);
+
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(validatedData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Registration failed");
+      }
+
+      // Registration successful
+      router.push(`/dashboard/${validatedData.username}`);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Handle Zod validation errors
+        setError(error.errors.map((err) => err.message).join(", "));
+      } else if (error instanceof Error) {
+        // Handle other errors
+        setError(error.message);
+      } else {
+        // Fallback error message
+        setError("An unexpected error occurred");
+      }
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-primary-foreground">
       <div className="max-w-md w-full space-y-8 p-8 rounded-lg bg-background shadow-lg">
@@ -15,7 +71,7 @@ export default function Page() {
           <p className="mt-2 text-center text-muted-foreground">
             Already have an account?{" "}
             <Link
-              href="/signin"
+              href="/sign-in"
               className="font-medium text-primary hover:underline"
               prefetch={false}
             >
@@ -23,14 +79,28 @@ export default function Page() {
             </Link>
           </p>
         </div>
-        <form className="space-y-6" action="#" method="POST">
+        {error && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+            role="alert"
+          >
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            credentialSignUp(new FormData(e.currentTarget));
+          }}
+        >
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="username">Username</Label>
             <Input
-              id="name"
-              name="name"
+              id="username"
+              name="username"
               type="text"
-              autoComplete="name"
+              autoComplete="username"
               required
               className="mt-1 block w-full"
             />

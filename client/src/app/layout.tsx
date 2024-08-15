@@ -15,7 +15,12 @@ const fontBody = Manrope({
   variable: "--font-body",
 });
 
+const defaultUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(defaultUrl),
   title: "Flashcard AI",
   description: "Learn Anything with AI-Powered Flashcards",
   icons: {

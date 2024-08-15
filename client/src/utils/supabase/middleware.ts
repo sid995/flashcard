@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export const updateSession = async (request: NextRequest) => {
   try {
     let response = NextResponse.next({
       request: {
@@ -45,4 +45,4 @@ export async function middleware(request: NextRequest) {
       },
     });
   }
-}
+};

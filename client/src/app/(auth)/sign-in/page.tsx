@@ -1,11 +1,60 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-// import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { signInSchema } from "@/lib/schemas/auth";
+import { createClient } from "@/utils/supabase/client";
+import { headers } from "next/headers";
 import Link from "next/link";
-import { JSX, SVGProps } from "react";
+import { useRouter } from "next/navigation";
+import { JSX, SVGProps, useState, FormEvent } from "react";
+import { z } from "zod";
 
-export default function Page() {
+export default function SignInPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      // Validate the form data
+      const validatedData = signInSchema.parse({ email, password });
+
+      const response = await fetch("/api/auth/sign-in", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(validatedData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to sign in");
+      }
+
+      const {
+        user: {
+          user_metadata: { username },
+        },
+      } = data;
+
+      // Successful sign-in
+      router.push(`/dashboard/${username}`);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        // Handle Zod validation errors
+        setError(err.errors.map((e) => e.message).join(", "));
+      } else {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      }
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-primary-foreground">
       <div className="max-w-md w-full space-y-8 p-8 rounded-lg bg-background shadow-lg">
@@ -14,24 +63,33 @@ export default function Page() {
           <p className="mt-2 text-center text-muted-foreground">
             Or{" "}
             <Link
-              href="/register"
+              href="/sign-up"
               className="font-medium text-primary hover:underline"
-              prefetch={false}
             >
               register for an account
             </Link>
           </p>
         </div>
-        <form className="space-y-6" action="#" method="POST">
+        {error && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+            role="alert"
+          >
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="username"
-              name="username"
-              type="text"
-              autoComplete="username"
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
               required
               className="mt-1 block w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div>
@@ -43,6 +101,8 @@ export default function Page() {
               autoComplete="current-password"
               required
               className="mt-1 block w-full"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div>
@@ -51,30 +111,17 @@ export default function Page() {
             </Button>
           </div>
         </form>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            {/* <Checkbox
-              id="remember-me"
-              name="remember-me"
-              className="h-4 w-4 rounded"
-            />
-            <Label
-              htmlFor="remember-me"
-              className="ml-2 block text-sm text-muted-foreground"
-            >
-              Remember me
-            </Label> */}
-          </div>
+        {/* <div className="flex items-center justify-between">
+          <div className="flex items-center"></div>
           <div className="text-sm">
             <Link
               href="/forgotpassword"
               className="font-medium text-primary hover:underline"
-              prefetch={false}
             >
               Forgot your password?
             </Link>
           </div>
-        </div>
+        </div> */}
         <div>
           <Button variant="outline" className="w-full">
             <GithubIcon className="w-5 h-5 mr-2" />

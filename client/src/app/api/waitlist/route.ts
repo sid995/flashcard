@@ -1,4 +1,4 @@
-import { supabase } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import { NextRequest, NextResponse } from "next/server";
 import { waitlistSchema } from "@/lib/schemas/waitlist";
 import { z } from "zod";
@@ -51,6 +51,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    const supabase = createClient();
 
     // Check for existing email
     const { data: existingUser } = await supabase

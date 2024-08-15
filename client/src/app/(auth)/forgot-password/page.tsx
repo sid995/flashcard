@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
         )}
         <div className="text-center">
           <Link
-            href="/signin"
+            href="/sign-in"
             className="font-medium text-primary hover:underline"
             prefetch={false}
           >

@@ -10,14 +10,27 @@ import {
   ArrowLeftToLine,
   Brain,
 } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
+import Link from "next/link";
 
 export const Sidebar = () => {
   const { username } = useParams();
+  const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(true);
+  const supabase = createClient();
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const logoutHandler = async () => {
+    const response = await supabase.auth.signOut();
+    if (response.error) {
+      console.log("logoutHandler", response.error);
+      return;
+    }
+    router.replace("/sign-in");
   };
 
   return (
@@ -68,7 +81,7 @@ export const Sidebar = () => {
           icon={<Brain size={24} />}
           text="Generate"
           isExpanded={isExpanded}
-          href={`/${username}`}
+          href={`/dashboard${username}`}
         />
         <NavItem
           icon={<FileUp size={24} />}
@@ -78,13 +91,36 @@ export const Sidebar = () => {
       </div>
 
       <div className="p-4">
-        <NavItem
+        <SignOut
+          onClick={logoutHandler}
           icon={<LogOut size={24} />}
           text="Sign Out"
           isExpanded={isExpanded}
         />
       </div>
     </nav>
+  );
+};
+
+const SignOut = ({
+  icon,
+  text,
+  isExpanded,
+  onClick = undefined,
+}: {
+  icon: any;
+  text: string;
+  isExpanded: boolean;
+  onClick?: () => void;
+}) => {
+  return (
+    <div
+      onClick={onClick}
+      className="cursor-pointer flex items-center p-4 text-gray-700 hover:bg-muted transition-colors duration-200 whitespace-nowrap overflow-hidden"
+    >
+      <span className="mr-4">{icon}</span>
+      {isExpanded && <span>{text}</span>}
+    </div>
   );
 };
 
@@ -100,13 +136,13 @@ const NavItem = ({
   href?: string;
 }) => {
   return (
-    <a
+    <Link
       href={href}
       className="flex items-center p-4 text-gray-700 hover:bg-muted transition-colors duration-200 whitespace-nowrap overflow-hidden"
     >
       <span className="mr-4">{icon}</span>
       {isExpanded && <span>{text}</span>}
-    </a>
+    </Link>
   );
 };
 
