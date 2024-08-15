@@ -1,1 +1,49 @@
+# Python
+*.py[cod]
+__pycache__/
+*.so
+
+# Flask
+instance/
+.webassets-cache
+
+# Environments
+.env
 .venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock

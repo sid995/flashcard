@@ -1,4 +1,5 @@
 env.txt
-.venv
-.env.local
 env_keys.txt
+
+# macOS
+.DS_Store
