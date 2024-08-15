@@ -56,7 +56,9 @@ def upload_pdf():
         texts = text_splitter.split_documents(documents)
         
         # Create vector store
-        vectorstore = Pinecone.from_documents(texts, embeddings, index_name=index_name)
+        index = pinecone.Index(index_name)
+        vectorstore = Pinecone(index, embeddings.embed_query, "text")
+        vectorstore.add_documents(texts)
         
         return jsonify({"message": "PDF uploaded and processed successfully"}), 200
     
@@ -67,7 +69,8 @@ def query_pdf():
     query = request.json['query']
     
     # Query the vector store
-    vectorstore = Pinecone.from_existing_index(index_name, embeddings)
+    index = pinecone.Index(index_name)
+    vectorstore = Pinecone(index, embeddings.embed_query, "text")
     results = vectorstore.similarity_search(query, k=5)
     
     # Generate response using Claude 3.5
