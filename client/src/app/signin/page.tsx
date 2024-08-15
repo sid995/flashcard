@@ -67,7 +67,7 @@ export default function Page() {
           </div>
           <div className="text-sm">
             <Link
-              href="#"
+              href="/forgotpassword"
               className="font-medium text-primary hover:underline"
               prefetch={false}
             >

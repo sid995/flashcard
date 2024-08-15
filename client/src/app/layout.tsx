@@ -2,6 +2,7 @@ import { Manrope } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "@/app/globals.css";
 import { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const fontHeading = Manrope({
   subsets: ["latin"],
@@ -27,15 +28,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-      </head>
-      <body
-        className={cn("antialiased", fontHeading.variable, fontBody.variable)}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <head>
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+        </head>
+        <body
+          className={cn("antialiased", fontHeading.variable, fontBody.variable)}
+        >
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
