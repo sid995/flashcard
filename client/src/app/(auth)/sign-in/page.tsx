@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signInSchema } from "@/lib/schemas/auth";
-import { createClient } from "@/utils/supabase/client";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { JSX, SVGProps, useState, FormEvent } from "react";

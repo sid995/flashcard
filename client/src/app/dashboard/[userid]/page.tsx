@@ -23,9 +23,12 @@ async function getUserData(userid: string) {
 }
 
 export default async function Page({ params }: { params: { userid: string } }) {
-  let user;
+  if (!params.userid || !isUUID(params.userid)) {
+    redirect("/sign-in");
+  }
+
   try {
-    user = await getUserData(params.userid);
+    await getUserData(params.userid);
   } catch (error) {
     redirect("/sign-in");
   }

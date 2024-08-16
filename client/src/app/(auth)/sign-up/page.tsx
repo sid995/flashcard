@@ -7,6 +7,7 @@ import { RegistrationData, registrationSchema } from "@/lib/schemas/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { JSX, SVGProps, useState } from "react";
+import toast from "react-hot-toast";
 import { z } from "zod";
 
 export default function Page() {
@@ -47,14 +48,16 @@ export default function Page() {
       }
 
       const {
-        user: { id: userId },
+        user: {
+          id: userId,
+          user_metadata: { username },
+        },
       } = data;
+
+      toast.success(`Welcome back, ${username}!`);
 
       // Successful sign-in
       router.push(`/dashboard/${userId}`);
-
-      // Registration successful
-      router.push(`/dashboard/${validatedData.username}`);
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Handle Zod validation errors

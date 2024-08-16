@@ -38,15 +38,9 @@ export async function POST(req: NextRequest) {
     .eq("id", session.user.id)
     .single();
 
-  console.log(userData);
-
-  console.log("after getting user data from supabase");
-
   if (userError || !userData) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
-
-  console.log("after userError");
 
   // Parse request body
   const { topic } = await req.json();
@@ -69,8 +63,6 @@ export async function POST(req: NextRequest) {
       temperature: 0.7,
       max_tokens: 1000,
     });
-
-    console.log(response.choices);
 
     const flashcards = JSON.parse(
       response.choices[0].message.content || '{"flashcards": []}'
