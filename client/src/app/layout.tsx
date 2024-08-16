@@ -23,9 +23,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Flashcard AI",
   description: "Learn Anything with AI-Powered Flashcards",
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({
@@ -33,9 +30,6 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-      </head>
       <body
         className={cn("antialiased", fontHeading.variable, fontBody.variable)}
       >

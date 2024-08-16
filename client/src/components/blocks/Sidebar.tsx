@@ -3,26 +3,28 @@
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import {
-  FileUp,
+  // FileUp,
   LogOut,
   BookIcon,
-  ArrowRightToLine,
-  ArrowLeftToLine,
+  // ArrowRightToLine,
+  // ArrowLeftToLine,
   Brain,
+  // History,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
+import { FlashcardTopicList } from "./Flashcard/FlashcardTopicList";
+import { createClient } from "@/utils/supabase/client";
 
 export const Sidebar = () => {
-  const { username } = useParams();
+  const { userid }: { userid: string } = useParams();
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(true);
   const supabase = createClient();
 
-  const toggleSidebar = () => {
-    setIsExpanded(!isExpanded);
-  };
+  // const toggleSidebar = () => {
+  //   setIsExpanded(!isExpanded);
+  // };
 
   const logoutHandler = async () => {
     const response = await supabase.auth.signOut();
@@ -49,7 +51,7 @@ export const Sidebar = () => {
           "justify-start": !isExpanded,
         })}
       >
-        <div
+        {/* <div
           onClick={toggleSidebar}
           className={cn(
             "hover:bg-muted cursor-pointer mt-4 flex items-center",
@@ -67,7 +69,7 @@ export const Sidebar = () => {
           {isExpanded && (
             <span className="text-lg font-bold pl-2">Collapse</span>
           )}
-        </div>
+        </div> */}
       </div>
       <div className="flex items-center p-4">
         <BookIcon className="size-6" />
@@ -81,13 +83,20 @@ export const Sidebar = () => {
           icon={<Brain size={24} />}
           text="Generate"
           isExpanded={isExpanded}
-          href={`/dashboard${username}`}
+          href={`/dashboard${userid}`}
         />
-        <NavItem
+        <FlashcardTopicList userId={userid} />
+        {/* <NavItem
+          icon={<History size={24} />}
+          text="Previous Flashcards"
+          isExpanded={isExpanded}
+          href={`/dashboard${userid}/history`}
+        /> */}
+        {/* <NavItem
           icon={<FileUp size={24} />}
           text="Upload a PDF"
           isExpanded={isExpanded}
-        />
+        /> */}
       </div>
 
       <div className="p-4">
