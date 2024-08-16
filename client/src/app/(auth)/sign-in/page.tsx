@@ -38,13 +38,11 @@ export default function SignInPage() {
       }
 
       const {
-        user: {
-          user_metadata: { username },
-        },
+        user: { id: userId },
       } = data;
 
       // Successful sign-in
-      router.push(`/dashboard/${username}`);
+      router.push(`/dashboard/${userId}`);
     } catch (err) {
       if (err instanceof z.ZodError) {
         // Handle Zod validation errors

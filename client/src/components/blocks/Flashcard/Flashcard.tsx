@@ -16,7 +16,7 @@ export default function FlashCard({
       className="bg-white border border-gray-200 rounded-lg shadow-md p-4 cursor-pointer"
       onClick={() => setIsFlipped(!isFlipped)}
     >
-      <div className="font-medium">{isFlipped ? "Answer:" : "Question:"}</div>
+      <div className="font-bold">{isFlipped ? "Answer:" : "Question:"}</div>
       <div className="mt-2">{isFlipped ? answer : question}</div>
     </div>
   );

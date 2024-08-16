@@ -40,10 +40,18 @@ export default function Page() {
         body: JSON.stringify(validatedData),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Registration failed");
+        throw new Error(data.error || "Failed to sign in");
       }
+
+      const {
+        user: { id: userId },
+      } = data;
+
+      // Successful sign-in
+      router.push(`/dashboard/${userId}`);
 
       // Registration successful
       router.push(`/dashboard/${validatedData.username}`);
