@@ -69,6 +69,7 @@ export const InputFlashcards = () => {
       }
 
       toast.success(`Flashcards saved successfully`, { id: "saveToast" });
+      window.dispatchEvent(new Event("refetchFlashcardTopics"));
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "An error occurred while saving",

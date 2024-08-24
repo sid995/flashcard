@@ -13,22 +13,14 @@ import {
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { FlashcardTopicList } from "./Flashcard/FlashcardTopicList";
+import FlashcardTopicList from "./Flashcard/FlashcardTopicList";
 import { toast } from "react-hot-toast";
-import { useSupabase } from "@/hooks/useSupabase";
 import { createClient } from "@/utils/supabase/client";
 
-export interface FlashcardTopic {
-  id: string;
-  topic: string;
-}
-
-export const Sidebar = () => {
+export const Sidebar = ({ user }: { user: any }) => {
   const { userid }: { userid: string } = useParams();
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(true);
-  const [topics, setTopics] = useState<FlashcardTopic[]>([]);
-  // const supabase = useSupabase();
   const supabase = createClient();
 
   // const toggleSidebar = () => {
@@ -43,96 +35,6 @@ export const Sidebar = () => {
     }
     router.replace("/sign-in");
   };
-
-  useEffect(() => {
-    const fetchTopics = async () => {
-      console.log("Fetching topics for user ID:", userid);
-
-      if (!userid) {
-        console.error("User ID is undefined or null");
-        return;
-      }
-
-      try {
-        const {
-          data: sessionData,
-          data: { session },
-          error: sessionError,
-        } = await supabase.auth.getSession();
-
-        console.log(sessionData);
-
-        if (sessionError) {
-          console.error("Error getting session:", sessionError);
-          toast.error("Failed to authenticate user");
-          return;
-        }
-
-        if (!session) {
-          console.error("User is not authenticated");
-          toast.error("User is not authenticated");
-          // router.push("/sign-in");
-          return;
-        }
-
-        const { data, error } = await supabase
-          .from("flashcard_topics")
-          .select("id, topic")
-          .eq("user_id", userid)
-          .order("created_at", { ascending: false });
-
-        console.log("Supabase response:", { data, error });
-
-        if (error) {
-          console.error("Error fetching topics:", error);
-        } else if (data && data.length > 0) {
-          console.log("Fetched topics:", data);
-          setTopics(data);
-        } else {
-          console.log("No topics found for user ID:", userid);
-        }
-      } catch (e) {
-        console.error("Exception while fetching topics:", e);
-      }
-    };
-
-    fetchTopics();
-
-    const channel = supabase.channel(`user-${userid}-flashcard-topics`);
-
-    channel
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "flashcard_topics",
-          filter: `user_id=eq.${userid}`,
-        },
-        (payload) => {
-          if (payload.eventType === "INSERT") {
-            setTopics((prev) => [payload.new as FlashcardTopic, ...prev]);
-          } else if (payload.eventType === "DELETE") {
-            setTopics((prev) =>
-              prev.filter((topic) => topic.id !== payload.old.id)
-            );
-          } else if (payload.eventType === "UPDATE") {
-            setTopics((prev) =>
-              prev.map((topic) =>
-                topic.id === payload.new.id
-                  ? { ...topic, ...payload.new }
-                  : topic
-              )
-            );
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
 
   return (
     <nav
@@ -184,7 +86,7 @@ export const Sidebar = () => {
           isExpanded={isExpanded}
           href={`/dashboard/${userid}`}
         />
-        <FlashcardTopicList userId={userid} topics={topics} />
+        <FlashcardTopicList supabase={supabase} />
         {/* <NavItem
           icon={<History size={24} />}
           text="Previous Flashcards"

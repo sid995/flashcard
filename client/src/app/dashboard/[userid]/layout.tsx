@@ -31,7 +31,7 @@ export default async function Layout({
       <Toaster position="top-right" />
       <main className="block h-screen">
         <div className="flex flex-row flex-1">
-          <Sidebar />
+          <Sidebar user={user} />
           <section className="flex-1 bg-white">{children}</section>
         </div>
       </main>
